@@ -5,7 +5,7 @@
     <em:id>nbfod@arantius.com</em:id>
     <em:name>NewsBlur Frame Options Defeater</em:name>
     <em:description>Allows all sites to be loaded into NewsBlur, despite X-Frame-Options frame busting settings.</em:description>
-    <em:version>2</em:version>
+    <em:version>3</em:version>
     <em:type>2</em:type>
     <em:bootstrap>true</em:bootstrap>
     <em:targetApplication>

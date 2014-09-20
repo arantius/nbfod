@@ -95,14 +95,14 @@ FrameOptionsDefeater.prototype = {
     } catch (e) {
       return;
     }
-    if (channel.referrer && 'www.newsblur.com' != channel.referrer.host) {
+    if (channel.referrer && 'newsblur.com' != channel.referrer.host) {
       dump('Skipping because of referrer: ' + channel.referrer.spec + '\n');
       // The frame navigation (to http: only?) sets no referrer.
       // So ignore when there is one.
       return;
     }
     channel.setResponseHeader(
-        'X-Frame-Options', 'ALLOW-FROM https://www.newsblur.com/', false);
+        'X-Frame-Options', 'ALLOW-FROM https://newsblur.com/', false);
   },
 
   shutdown: function() {
