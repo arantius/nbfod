@@ -37,17 +37,11 @@ FrameOptionsDefeater.prototype = {
     case 'xpcom-shutdown':
       this.shutdown();
       break;
-    case 'http-on-modify-request':
-      this.observeRequest(subject, topic, data);
-      break;
     case 'http-on-examine-response':
     case 'http-on-examine-cached-response':
       this.observeResponse(subject, topic, data);
       break;
     }
-  },
-
-  observeRequest: function observeRequest(channel, topic, data) {
   },
 
   observeResponse: function observeResponse(channel, topic, data) {
