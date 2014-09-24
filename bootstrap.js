@@ -16,13 +16,11 @@ FrameOptionsDefeater.prototype = {
   GetWeakReference: function() this,
 
   _registerHttpObservers: function _registerHttpObservers() {
-    Services.obs.addObserver(this, 'http-on-modify-request', true);
     Services.obs.addObserver(this, 'http-on-examine-response', true);
     Services.obs.addObserver(this, 'http-on-examine-cached-response', true);
   },
 
   _unregisterHttpObservers: function _unregisterHttpObservers() {
-    Services.obs.removeObserver(this, 'http-on-modify-request');
     Services.obs.removeObserver(this, 'http-on-examine-response');
     Services.obs.removeObserver(this, 'http-on-examine-cached-response');
   },
