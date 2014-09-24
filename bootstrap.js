@@ -43,50 +43,6 @@ FrameOptionsDefeater.prototype = {
   },
 
   observeRequest: function observeRequest(channel, topic, data) {
-    /*
-    dump('>>> observeRequest ...\n');
-
-    /*
-    try {
-      channel.QueryInterface(Ci.nsIPropertyBag2);
-      dump('nsIPropertyBag2: ' + channel + '\n');
-      var enumr = channel.enumerator;
-      while (enumr.hasMoreElements()) {
-        var p = enumr.getNext();
-        dump('Request has prop ' + p.name + ' = ' + p.value + '\n');
-      }
-    } catch (e) {
-      dump('Fail lookup:\n'+e+'\n');
-    }
-    */
-
-    /*
-    try {
-      channel.QueryInterface(Ci.nsIHttpChannel);
-    } catch (e) {
-      return;
-    }
-
-    try {
-      channel.QueryInterface(Ci.nsIChannel);
-      dump('nsIChannel: ' + channel + '\n');
-      dump(channel.owner + '\n');
-    } catch (e) {
-      return;
-    }
-
-    /*
-    try {
-      channel.QueryInterface(Ci.nsIPropertyBag);
-      var enum = channel.enumerator;
-      while (enum.hasMoreElements()) {
-        var p = enum.getNext();
-        dump('Request has prop ' + p.name + ' = ' p.value + '\n');
-      }
-    } catch (e) {
-      dump('Fail lookup:\n'+e+'\n');
-    }
-    */
   },
 
   observeResponse: function observeResponse(channel, topic, data) {
@@ -95,14 +51,14 @@ FrameOptionsDefeater.prototype = {
     } catch (e) {
       return;
     }
-    if (channel.referrer && 'newsblur.com' != channel.referrer.host) {
-      dump('Skipping because of referrer: ' + channel.referrer.spec + '\n');
-      // The frame navigation (to http: only?) sets no referrer.
-      // So ignore when there is one.
-      return;
+    if (channel.referrer && 'newsblur.com' == channel.referrer.host) {
+      channel.setResponseHeader(
+          'X-Frame-Options', 'ALLOW-FROM https://newsblur.com/', false);
     }
-    channel.setResponseHeader(
-        'X-Frame-Options', 'ALLOW-FROM https://newsblur.com/', false);
+    if (channel.referrer && 'www.newsblur.com' == channel.referrer.host) {
+      channel.setResponseHeader(
+          'X-Frame-Options', 'ALLOW-FROM https://www.newsblur.com/', false);
+    }
   },
 
   shutdown: function() {
