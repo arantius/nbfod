@@ -27,6 +27,11 @@ FrameOptionsDefeater.prototype = {
     Services.obs.removeObserver(this, 'http-on-examine-cached-response');
   },
 
+  shutdown: function() {
+    this._unregisterHttpObservers();
+    Services.obs.removeObserver(this, 'xpcom-shutdown');
+  },
+
   observe: function observe(subject, topic, data) {
     switch(topic) {
     case 'xpcom-shutdown':
@@ -46,24 +51,28 @@ FrameOptionsDefeater.prototype = {
   },
 
   observeResponse: function observeResponse(channel, topic, data) {
-    try {
-      channel.QueryInterface(Ci.nsIHttpChannel);
-    } catch (e) {
-      return;
-    }
-    if (channel.referrer && 'newsblur.com' == channel.referrer.host) {
+    if (this.channelIsLoadForNewsblur(channel)) {
+      channel.setResponseHeader(
+          'X-Frame-Options', 'ALLOW-FROM https://www.newsblur.com/', false);
       channel.setResponseHeader(
           'X-Frame-Options', 'ALLOW-FROM https://newsblur.com/', false);
     }
-    if (channel.referrer && 'www.newsblur.com' == channel.referrer.host) {
-      channel.setResponseHeader(
-          'X-Frame-Options', 'ALLOW-FROM https://www.newsblur.com/', false);
-    }
   },
 
-  shutdown: function() {
-    this._unregisterHttpObservers();
-    Services.obs.removeObserver(this, 'xpcom-shutdown');
+  channelIsLoadForNewsblur: function(channel) {
+    try {
+      channel.QueryInterface(Ci.nsIHttpChannel);
+      var win = channel.notificationCallbacks
+          .getInterface(Ci.nsILoadContext)
+          .associatedWindow;
+      var th = win.top.location.host;
+    } catch (e) {
+      // If I couldn't look it up for sure, default to no.
+      return false;
+    }
+
+    // But when I can look it up, check for both host name options.
+    return (th && th in {'newsblur.com': 1, 'www.newsblur.com': 1});
   }
 };
 
